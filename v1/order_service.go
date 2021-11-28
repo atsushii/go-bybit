@@ -1,5 +1,10 @@
 package bybit
 
+import (
+	"context"
+	"net/http"
+)
+
 type NewOrderService struct {
 	Client         *client
 	Symbol         string
@@ -79,4 +84,20 @@ func (s *NewOrderService) closeOnTrigger(closeOnTrigger bool) *NewOrderService {
 func (s *NewOrderService) orderLinkId(orderLinkId string) *NewOrderService {
 	s.OrderLinkId = orderLinkId
 	return s
+}
+
+func (s *NewOrderService) createNewOrder(ctx context.Context, endpoint string) (data []byte, err error) {
+	req := &request{
+		method: http.MethodPost,
+		endpoint: endpoint,
+		sign: "sign",
+	}
+
+	params := params {
+		"symbol": s.Symbol,
+		"side": s.Side,
+		"type": s.OrderType,
+	}
+
+	// TODO: call api and return data
 }
