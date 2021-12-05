@@ -1,6 +1,11 @@
 package bybit
 
-import "time"
+import (
+	"context"
+	"fmt"
+	"net/http"
+	"time"
+)
 
 // Endpoints
 const (
@@ -24,6 +29,7 @@ func formatTimestamp(t time.Time) int64 {
 type client struct {
 	APIKey    string
 	SecretKey string
+	BaseURL    string
 	Debug     bool
 }
 
@@ -42,5 +48,30 @@ func newClient(apiKey, secretKey string) *client {
 	return &client{
 		APIKey:    apiKey,
 		SecretKey: secretKey,
+		BaseURL:    getAPIEndpoint(),
+	}
+}
+
+func (c *client) parseRequest(r *request, opts ...RequestOption) (err error) {
+	//set request options from user
+	for _, opt := range opts {
+		opt(r)
+	}
+	// TODO: add validator
+	err = r.validate()
+	if err != nil {
+		return err
+	}
+	fullURL := fmt.Sprintf("%s%s", c.BaseURL, r.endpoint)
+	// TODO: from lone 235
+}
+func (c *client) callAPI(ctx context.Context, r *request, opts ...RequestOption) (data []byte, err error) {
+	err = c.parseRequest(r, opts...)
+	if err != nil {
+		return []byte{}, err
+	}
+	req, err := http.NewRequest(r.method, r.fullURL, r.body)
+	if err != nil {
+		return []byte{}, err
 	}
 }

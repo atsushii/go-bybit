@@ -99,5 +99,20 @@ func (s *NewOrderService) createNewOrder(ctx context.Context, endpoint string) (
 		"type": s.OrderType,
 	}
 
+	if s.price != nil {
+		params["price"] = s.Price
+	}
+	if s.quantity != nil {
+		params["quantity"] = s.Quantity
+	}
+	if s.stopPrice != nil {
+		params["stopPrice"] = s.StopPrice
+	}
+	if s.orderLinkId != nil {
+		params["orderLinkId"] = s.OrderLinkId
+	}
+	req.setFormParams(params)
+	data, err = s.Client.callAPI(ctx, req, opts...)
 	// TODO: call api and return data
+
 }
