@@ -22,6 +22,16 @@ type request struct {
 
 type RequestOption func(*request)
 
+func (r *request) validate() (err error) {
+	if r.query == nil {
+		r.query = url.Values{}
+	}
+	if r.form == nil {
+		r.form = url.Values{}
+	}
+	return nil
+}
+
 func (r *request) setFormParam(key string, value interface{}) *request {
 	if r.form == nil {
 		r.form = url.Values{}
